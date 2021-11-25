@@ -30,12 +30,13 @@ class MarvelService {
             description = description.slice(0, 150) + '..!';
         }
         return {
+            id: char.id,
             name: char.name,
             description: description,
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url,
-            id: char.id
+            comics: char.comics.items
         }
     }
 }
