@@ -115,6 +115,7 @@ const View = ({char}) => {
             <ul className="char__comics-list">
                 {comics.length > 0 ? null : 'No data Comics'}
                 {
+                    // eslint-disable-next-line
                     comics.map((item, i) => {
                         for (i; i < 10; i++) {
                             return (
