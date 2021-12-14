@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import Spinner from '../spinner/spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
@@ -17,7 +18,6 @@ const ComicsList = () => {
 
     useEffect(() => {
         onRequest(offset, true);
-        console.log('Comics request effec')
     }, [])
 
     const onRequest = (offset, initial) => {
@@ -27,6 +27,9 @@ const ComicsList = () => {
     }
 
     const onComicsLoaded = (newComics) => {
+
+
+
         let ended = false;
         if (newComics.length < 8) {
             ended = true;
@@ -34,7 +37,7 @@ const ComicsList = () => {
 
         setComicsList(comicsList => [...comicsList, ...newComics])
         setNewItemLoading(false);
-        setOffset(offset => offset + 8);
+        setOffset(offset => offset + 16);
         setComicsEnded(ended)
     }
 
@@ -43,11 +46,11 @@ const ComicsList = () => {
             return (
                 <li className="comics__item"
                 key={i}>
-                    <a href="#">
+                    <Link to={`/comics/${item.id}`}>
                         <img src={item.thumbnail} alt={item.name} className="comics__item-img"/>
                         <div className="comics__item-name">{item.name}</div>
                         <div className="comics__item-price">{item.price}$</div>
-                    </a>
+                    </Link>
                 </li>
             )
         })

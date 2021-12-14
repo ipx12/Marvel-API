@@ -4,12 +4,14 @@ import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/spinner';
 import ErrorMessage from '../errorMessage/errorMessage';
 import Skeleton from '../skeleton/Skeleton'
+import {CSSTransition} from 'react-transition-group';
 
 import './charInfo.scss';
 
 const CharInfo = (props) => {
 
     const [char, setChar] = useState(null);
+    const [charInfoAnimation, setcharInfoAnimation] = useState(false);
     
     const {loading, error, getCharacter, clearError} = useMarvelService();
 
@@ -19,6 +21,7 @@ const CharInfo = (props) => {
 
     useEffect(() => {
         updateChar();
+        setcharInfoAnimation(false);
     }, [props.charId])
 
     const updateChar = () => {
@@ -27,6 +30,7 @@ const CharInfo = (props) => {
             return;
         }
 
+        
         clearError();
         getCharacter(charId)
             .then(onCharLoaded)
@@ -35,6 +39,7 @@ const CharInfo = (props) => {
 
     const onCharLoaded = (char) => {
         setChar(char);
+        setcharInfoAnimation(true);
     }
 
     const skeleton = char || loading || error ? null : <Skeleton/>;
@@ -43,12 +48,14 @@ const CharInfo = (props) => {
     const content = !(loading || error || !char) ? <View char={char}/> : null;
 
     return (
-        <div className="char__info">
-            {skeleton}
-            {errorMessage}
-            {spinner}
-            {content}
-        </div>
+        <CSSTransition in={charInfoAnimation} classNames="char__info" timeout={1000}>
+            <div className="char__info">
+                {skeleton}
+                {errorMessage}
+                {spinner}
+                {content}
+            </div>
+        </CSSTransition>
     )
 }
 
