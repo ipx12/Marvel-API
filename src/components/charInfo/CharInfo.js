@@ -15,11 +15,13 @@ const CharInfo = (props) => {
 
     useEffect(() => {
         updateChar();
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
         updateChar();
         setcharInfoAnimation(false);
+        // eslint-disable-next-line
     }, [props.charId])
 
     const updateChar = () => {

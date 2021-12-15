@@ -13,6 +13,7 @@ const SinglePage = ({Component, dataType}) => {
 
         useEffect(() => {
             updateData()
+            // eslint-disable-next-line
         }, [comicId])
 
         const updateData = () => {
