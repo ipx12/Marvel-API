@@ -2,15 +2,34 @@ import {useState} from 'react';
 import { Formik, Form, Field, ErrorMessage as FormikErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom';
+import Spinner from '../spinner/spinner';
+import ErrorMessage from '../errorMessage/errorMessage';
+
 
 import useMarvelService from '../../services/MarvelService';
-import ErrorMessage from '../errorMessage/errorMessage';
 
 import './charSearchForm.scss';
 
+const setContent = (process, Component) => {
+    switch (process) {
+        case 'waiting':
+            return <Component/>;
+        case 'loading':
+            return <Spinner/>;
+        case 'confirmed':
+            return <Component/>;
+        case 'error':
+            return <ErrorMessage/>
+        default:
+            throw new Error('Unexpected prrocess state');
+    }   
+}
+
 const CharSearchForm = () => {
     const [char, setChar] = useState(null);
-    const {loading, error, getCharacterByName, clearError} = useMarvelService();
+    const {getCharacterByName, clearError, process, setProcess} = useMarvelService();
+
+    const [loading, setLoading] = useState(false);
 
     const onCharLoaded = (char) => {
         setChar(char);
@@ -18,12 +37,14 @@ const CharSearchForm = () => {
 
     const updateChar = (name) => {
         clearError();
+        setLoading(true);
 
         getCharacterByName(name)
-            .then(onCharLoaded);
+            .then(onCharLoaded)
+            .then(() => setProcess('confirmed'))
+            .then(() => setLoading(false))
     }
 
-    const errorMessage = error ? <div className="char__search-critical-error"><ErrorMessage /></div> : null;
     const results = !char ? null : char.length > 0 ?
                     <div className="char__search-wrapper">
                         <div className="char__search-success">There is! Visit {char[0].name} page?</div>
@@ -66,8 +87,7 @@ const CharSearchForm = () => {
                     <FormikErrorMessage component="div" className="char__search-error" name="charName" />
                 </Form>
             </Formik>
-            {results}
-            {errorMessage}
+            {setContent(process, () => results)}
         </div>
     )
 }
